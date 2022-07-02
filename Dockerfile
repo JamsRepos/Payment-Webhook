@@ -1,6 +1,6 @@
-FROM php:8.1-cli
-RUN docker-php-source mongodb \
-	composer install \
-	&& docker-php-source delete
+FROM php:7.4-cli
+RUN pecl install mongodb \
+	&& docker-php-ext-enable mongodb \
+    && composer install
 COPY . .
 CMD [ "php", "./webhook.php" ]

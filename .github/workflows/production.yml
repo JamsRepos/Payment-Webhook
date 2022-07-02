@@ -14,7 +14,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          python-version: 8.1
+          python-version: 7.4
           extensions: mongodb
           tools: composer:v2
       - name: Install dependencies
