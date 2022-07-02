@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3dab764a2877c04a954b87ac7589bff9",
+    "content-hash": "7e7cbb83a43d6b2a734d4b1100fb00ec",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
@@ -216,6 +216,110 @@
                 }
             ],
             "time": "2022-05-10T07:21:04+00:00"
+        },
+        {
+            "name": "terdia/currency-util",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/terdia/currency-util.git",
+                "reference": "ea23ad9d3d29744d104066a00d0b46f2ea4badc8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/terdia/currency-util/zipball/ea23ad9d3d29744d104066a00d0b46f2ea4badc8",
+                "reference": "ea23ad9d3d29744d104066a00d0b46f2ea4badc8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Currency\\Util\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "terdia",
+                    "email": "support@devscreencast.com",
+                    "homepage": "https://devscreencast.com"
+                }
+            ],
+            "description": "A simple library to lookup the currency symbol for a given currency code.",
+            "keywords": [
+                "currency",
+                "mapping",
+                "php currency map"
+            ],
+            "support": {
+                "issues": "https://github.com/terdia/currency-util/issues",
+                "source": "https://github.com/terdia/currency-util/tree/v1.0.1"
+            },
+            "time": "2022-03-20T15:55:12+00:00"
+        },
+        {
+            "name": "woeler/phpdiscord",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Woeler/discord-php.git",
+                "reference": "7e1610a0b0e3d23b35efeeb7488cbad10750d8f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Woeler/discord-php/zipball/7e1610a0b0e3d23b35efeeb7488cbad10750d8f0",
+                "reference": "7e1610a0b0e3d23b35efeeb7488cbad10750d8f0",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.19"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Woeler\\DiscordPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Woeler",
+                    "email": "woeler@woeler.eu"
+                }
+            ],
+            "description": "A php library to use Discord webhooks and embeds.",
+            "support": {
+                "issues": "https://github.com/Woeler/discord-php/issues",
+                "source": "https://github.com/Woeler/discord-php/tree/3.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://woeler.tech",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/Woeler",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-06-30T13:45:06+00:00"
         }
     ],
     "packages-dev": [],

@@ -1,5 +1,7 @@
 {
     "require": {
-        "mongodb/mongodb": "^1.12"
+        "mongodb/mongodb": "^1.0.0",
+        "woeler/phpdiscord": "^3.0",
+        "terdia/currency-util": "^1.0"
     }
 }
