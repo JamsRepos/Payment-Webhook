@@ -14,9 +14,6 @@
         );
 
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        //for debug only!
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
         $resp = curl_exec($curl);
         curl_close($curl);
@@ -29,8 +26,36 @@
         }
     }
 
+    function addLibrary($userID, $types) {
+        $url = 'http://jellyfin-session-kicker:8887';
+
+        $postdata = http_build_query(
+            array(
+                'UserId' => $userID,
+                'MediaTypes' => $types
+            )
+        );
+
+        $opts = array('http' =>
+            array(
+                'method' => 'POST',
+                'header' => array(
+                    'Content-type: application/x-www-form-urlencoded',
+                    'Authorization: Basic yDe0ypZAQCQ42Y1qkaHwgN7mbw0dgn1Wj1R38NwKHOK9d9MrfpgBQw',
+                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+                ),
+                'content' => $postdata
+            )
+        );
+        $context = stream_context_create($opts);
+        $result = file_get_contents($url, false, $context);
+        echo $result;
+
+        var_dump($result);
+    }
+
     function addTime($package, $duration) {
-        global $collection, $userID, $webhook;
+        global $client, $collection, $userID, $webhook;
 
         $userExists = $collection->findOne([
             'userID' => $userID,

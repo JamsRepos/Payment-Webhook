@@ -38,7 +38,7 @@
     $webhook = json_decode($debug ?? $input['data']);
 
     // Create the database connection
-    $client = new MongoDB\Client("mongodb://localhost:27017");
+    $client = new MongoDB\Client("mongodb://mongo:27017");
 
     // Select the database
     $collection = $client->payments->users;
@@ -46,43 +46,45 @@
     // Grabs user id from Jellyfin if the Username exists
     $userID = userID($webhook->from_name);
 
-    if ($userID) {
-        $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
-        $webhook_url = "https://discord.com/api/webhooks/934490584264106095/OHHdlFDF0US2pPdDYR8X1qXJF5KDK5KhKoh-EYxpBQXJRqcaJ-78SXEa2sBQsg86kyeF";
+    addLibrary('123123123', ['episode', 'livetv']);
 
-        switch ($webhook->type) {
-            case "Subscription":
-                addTime($webhook->tier_name, '+1 month');
+    // if ($userID) {
+    //     $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
+    //     $webhook_url = "https://discord.com/api/webhooks/934490584264106095/OHHdlFDF0US2pPdDYR8X1qXJF5KDK5KhKoh-EYxpBQXJRqcaJ-78SXEa2sBQsg86kyeF";
 
-                if ($webhook->is_first_subscription_payment) {
-                    $webhook_title = "New Subscription Payment";
-                    $webhook_description = "**{$webhook->from_name}** *({$userID})* subscribed to **{$webhook->tier_name}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
-                    $webhook_colour = "4ee51b";
-                } else {
-                    $webhook_title = "Ongoing Subscription Payment";
-                    $webhook_description = "**{$webhook->from_name}** *({$userID})* renewed their subscription to **{$webhook->tier_name}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
-                    $webhook_colour = "F28C28";
-                }
+    //     switch ($webhook->type) {
+    //         case "Subscription":
+    //             addTime($webhook->tier_name, '+1 month');
 
-                sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
-            case "Shop Order":
-                // Loop through all the items purchased and add the time to the user
-                foreach ($webhook->shop_items as $product) {
-                    $productExists = $shop[$product->direct_link_code];
+    //             if ($webhook->is_first_subscription_payment) {
+    //                 $webhook_title = "New Subscription Payment";
+    //                 $webhook_description = "**{$webhook->from_name}** *({$userID})* subscribed to **{$webhook->tier_name}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
+    //                 $webhook_colour = "4ee51b";
+    //             } else {
+    //                 $webhook_title = "Ongoing Subscription Payment";
+    //                 $webhook_description = "**{$webhook->from_name}** *({$userID})* renewed their subscription to **{$webhook->tier_name}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
+    //                 $webhook_colour = "F28C28";
+    //             }
 
-                    // If the product exists in the array, add the time to the user
-                    if ($productExists) {
-                        addTime($productExists['name'], $productExists['months']);
+    //             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+    //         case "Shop Order":
+    //             // Loop through all the items purchased and add the time to the user
+    //             foreach ($webhook->shop_items as $product) {
+    //                 $productExists = $shop[$product->direct_link_code];
 
-                        $webhook_title = "New Purchase Payment";
-                        $webhook_description = "**{$webhook->from_name}** *({$userID})* has bought **{$productExists['label']}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
-                        $webhook_colour = "4ee51b";
+    //                 // If the product exists in the array, add the time to the user
+    //                 if ($productExists) {
+    //                     addTime($productExists['name'], $productExists['months']);
 
-                        sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
-                    }
-                }
-            default:
+    //                     $webhook_title = "New Purchase Payment";
+    //                     $webhook_description = "**{$webhook->from_name}** *({$userID})* has bought **{$productExists['label']}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
+    //                     $webhook_colour = "4ee51b";
 
-        }
-    }
+    //                     sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+    //                 }
+    //             }
+    //         default:
+
+    //     }
+    // }
 ?>
