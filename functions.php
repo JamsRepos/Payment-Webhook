@@ -29,6 +29,49 @@
         }
     }
 
+    function addTime($package, $duration) {
+        global $collection, $userID, $webhook;
+
+        $userExists = $collection->findOne([
+            'userID' => $userID,
+        ]);
+
+        // If the user doesn't exist, create them
+        if ($userExists) {
+            // Check to see if the package in the database is the same as the package in the webhook
+            if ($userExists['package'] == $package) {
+                // Update the user's subscription date
+                $collection->updateOne([
+                    'userID' => $userID,
+                ], [
+                    '$set' => [
+                        'updated' => strtotime('now'),
+                        'expiry' => strtotime($duration, $userExists['expiry']),
+                    ],
+                ]);
+            } else {
+                // Update the user's subscription date
+                $collection->updateOne([
+                    'userID' => $userID,
+                ], [
+                    '$set' => [
+                        'package' => $package,
+                        'updated' => strtotime('now'),
+                        'expiry' => strtotime($duration),
+                    ],
+                ]);
+            }
+        } else {
+            // Insert the user into the database
+            $collection->insertOne([
+                'userID' => $userID,
+                'package' => $webhook->tier_name,
+                'updated' => strtotime('now'),
+                'expiry' => strtotime($duration),
+            ]);
+        }
+    }
+
     function sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour) {
         $message = (new Woeler\DiscordPhp\Message\DiscordEmbedMessage())
         ->setTitle($webhook_title)
