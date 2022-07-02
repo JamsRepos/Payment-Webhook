@@ -6,7 +6,7 @@
     // Test information
     $debug = '{
         "message_id":"3a1fac0c-f960-4506-a60e-824979a74e74",
-        "timestamp":"2022-08-21T13:04:30Z",
+        "timestamp":"2022-01-01T13:04:30Z",
         "type":"Subscription",
         "is_public":false,
         "from_name":"Jam",
@@ -31,7 +31,7 @@
     $client = new MongoDB\Client("mongodb://localhost:27017");
 
     // Select the database
-    $collection = $client->payments;
+    $collection = $client->payments->users;
 
     // Grabs user id from Jellyfin if the Username exists
     $userID = userID($webhook->from_name);
@@ -39,25 +39,59 @@
     if ($userID) {
         switch ($webhook->type) {
             case "Subscription":
-                if ($webhook->is_first_subscription_payment) {
-                    $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
+                $doesExist = $collection->findOne([
+                    'userID' => $userID,
+                ]);
 
+                // If the user doesn't exist, create them
+                if ($doesExist) {
+                    // Check to see if the package in the database is the same as the package in the webhook
+                    if ($doesExist['package'] == $webhook->tier_name) {
+                        // Update the user's subscription date
+                        $collection->updateOne([
+                            'userID' => $userID,
+                        ], [
+                            '$set' => [
+                                'updated' => strtotime('now'),
+                                'expiry' => strtotime('+1 month', $doesExist['expiry']),
+                            ],
+                        ]);
+                    } else {
+                        // Update the user's subscription date
+                        $collection->updateOne([
+                            'userID' => $userID,
+                        ], [
+                            '$set' => [
+                                'package' => $webhook->tier_name,
+                                'updated' => strtotime('now'),
+                                'expiry' => strtotime('+1 month'),
+                            ],
+                        ]);
+                    }
+                } else {
+                    // Insert the user into the database
+                    $collection->insertOne([
+                        'userID' => $userID,
+                        'package' => $webhook->tier_name,
+                        'updated' => strtotime('now'),
+                        'expiry' => strtotime('+1 month'),
+                    ]);
+                }
+
+                $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
+                $webhook_url = "https://discord.com/api/webhooks/934490584264106095/OHHdlFDF0US2pPdDYR8X1qXJF5KDK5KhKoh-EYxpBQXJRqcaJ-78SXEa2sBQsg86kyeF";
+
+                if ($webhook->is_first_subscription_payment) {
                     $webhook_title = "New Subscription Payment";
                     $webhook_description = "**{$webhook->from_name}** *({$userID})* subscribed to **{$webhook->tier_name}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
                     $webhook_colour = "4ee51b";
-                    $webhook_url = "https://discord.com/api/webhooks/934490584264106095/OHHdlFDF0US2pPdDYR8X1qXJF5KDK5KhKoh-EYxpBQXJRqcaJ-78SXEa2sBQsg86kyeF";
-
-                    sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
                 } else {
-                    $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
-
                     $webhook_title = "Ongoing Subscription Payment";
                     $webhook_description = "**{$webhook->from_name}** *({$userID})* renewed their subscription to **{$webhook->tier_name}** *({$webhook->kofi_transaction_id})* for **{$currency}{$webhook->amount}**.";
                     $webhook_colour = "F28C28";
-                    $webhook_url = "https://discord.com/api/webhooks/934490584264106095/OHHdlFDF0US2pPdDYR8X1qXJF5KDK5KhKoh-EYxpBQXJRqcaJ-78SXEa2sBQsg86kyeF";
-
-                    sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
                 }
+
+                sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
             case "Shop Order":
 
             default:

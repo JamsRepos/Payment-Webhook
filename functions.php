@@ -1,4 +1,6 @@
 <?php
+    date_default_timezone_set('Europe/London');
+
     function userID($username = null) {
         $url = "https://karna.ge/Users";
 
