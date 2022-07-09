@@ -27,35 +27,44 @@
     }
 
     function addLibrary($userID, $types) {
+        //The url you wish to send the POST request to
         $url = 'http://jellyfin-session-kicker:8887';
 
-        $postdata = http_build_query(
-            array(
-                'UserId' => $userID,
-                'MediaTypes' => $types
-            )
+        //The headers we are going to use for the request
+        $headers = array(
+            'Content-Type: application/json',
+            'Authorization: Basic ' . base64_decode(utf8_encode("yDe0ypZAQCQ42Y1qkaHwgN7mbw0dgn1Wj1R38NwKHOK9d9MrfpgBQw")) // <---
         );
 
-        $opts = array('http' =>
-            array(
-                'method' => 'POST',
-                'header' => array(
-                    'Content-type: application/x-www-form-urlencoded',
-                    'Authorization: Basic yDe0ypZAQCQ42Y1qkaHwgN7mbw0dgn1Wj1R38NwKHOK9d9MrfpgBQw',
-                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
-                ),
-                'content' => $postdata
-            )
+        //The data you want to send via POST
+        $fields = array(
+            'UserId' => $userID,
+            'MediaTypes' => $types
         );
-        $context = stream_context_create($opts);
-        $result = file_get_contents($url, false, $context);
-        echo $result;
 
-        var_dump($result);
+        //url-ify the data for the POST
+        $fields_string = http_build_query($fields);
+
+        //open connection
+        $ch = curl_init();
+
+        //set the url, number of POST vars, POST headers, POST data
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+
+        //So that curl_exec returns the contents of the cURL; rather than echoing it
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        //execute post
+        $result = curl_exec($ch);
+        echo($result);
+        curl_close($ch);
     }
 
     function addTime($package, $duration) {
-        global $client, $collection, $userID, $webhook;
+        global $collection, $userID, $webhook;
 
         $userExists = $collection->findOne([
             'userID' => $userID,
