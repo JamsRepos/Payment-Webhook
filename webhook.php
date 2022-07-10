@@ -4,7 +4,7 @@
     require 'functions.php';
 
     // Create the database connection
-    $client = new MongoDB\Client("mongodb://localhost:27017");
+    $client = new MongoDB\Client("mongodb://mongo:27017");
 
     // Test information
     // $debug = '{
