@@ -5,7 +5,7 @@
     error_reporting(E_ALL);
 
     function userID($username = null) {
-        $url = "http://jellyfin:8096/Users";
+        $url = "https://karna.ge/Users";
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -29,46 +29,67 @@
         }
     }
 
-    function addLibrary($userID, $types) {
-        //The url you wish to send the POST request to
-        $url = 'http://jellyfin-session-kicker:8887';
+    function addLibrary($package) {
+        global $client, $collection, $userID;
 
-        //The headers we are going to use for the request
-        $headers = array(
-            'Content-Type: application/json',
-            'Authorization: Basic ' . base64_decode(utf8_encode("yDe0ypZAQCQ42Y1qkaHwgN7mbw0dgn1Wj1R38NwKHOK9d9MrfpgBQw")) // <---
-        );
+        // Select the database
+        $collection = $client->session_timer->whitelist;
 
-        //The data you want to send via POST
-        $fields = array(
+        // Check if the user is in the database
+        $userExists = $collection->findOne([
             'UserId' => $userID,
-            'MediaTypes' => $types
-        );
+        ]);
 
-        //url-ify the data for the POST
-        $fields_string = http_build_query($fields);
-        echo $fields_string;
+        if ($package == "Survivor") {
+            $types = ["episode", "tvchannel"];
+        } else {
+            $types = ["episode"];
+        }
 
-        //open connection
-        $ch = curl_init($url);
+        // If the user doesn't exist, add them to the database
+        if (!$userExists) {
+            $collection->insertOne([
+                'UserId' => $userID,
+                'MediaTypes' => $types,
+            ]);
+        } else {
+            $collection->updateOne([
+                'UserId' => $userID,
+            ], [
+                '$set' => [
+                    'MediaTypes' => $types,
+                ],
+            ]);
+        }
+    }
 
-        //set the url, number of POST vars, POST headers, POST data
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+    function removeLibraries() {
+        global $client, $collection, $userID;
 
-        //So that curl_exec returns the contents of the cURL; rather than echoing it
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // Select the database
+        $collection = $client->session_timer->whitelist;
 
-        //execute post
-        $result = curl_exec($ch);
-        echo($result);
-        curl_close($ch);
+        // Check if the user is in the database
+        $userExists = $collection->findOne([
+            'UserId' => $userID,
+        ]);
+
+        // If the user doesn't exist, add them to the database
+        if ($userExists) {
+            $collection->deleteOne([
+                'UserId' => $userID,
+            ]);
+        }
     }
 
     function addTime($package, $duration) {
-        global $collection, $userID, $webhook;
+        global $client, $collection, $userID, $webhook;
+
+        // Needs to run first as it changes the database
+        addLibrary($package);
+
+        // Select the database
+        $collection = $client->payments->users;
 
         $userExists = $collection->findOne([
             'userID' => $userID,
