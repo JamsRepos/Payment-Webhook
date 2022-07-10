@@ -1,8 +1,11 @@
 <?php
     date_default_timezone_set('Europe/London');
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 
     function userID($username = null) {
-        $url = "http://jellyfin:8096/Users";
+        $url = "https://karna.ge/Users";
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -44,9 +47,10 @@
 
         //url-ify the data for the POST
         $fields_string = http_build_query($fields);
+        echo $fields_string;
 
         //open connection
-        $ch = curl_init();
+        $ch = curl_init($url);
 
         //set the url, number of POST vars, POST headers, POST data
         curl_setopt($ch, CURLOPT_URL, $url);

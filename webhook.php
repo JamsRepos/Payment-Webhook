@@ -45,7 +45,8 @@
 
     // Grabs user id from Jellyfin if the Username exists
     $userID = userID($webhook->from_name);
-    addLibrary('345345345345345345345', ['episode', 'livetv']);
+    echo "User ID: " . $userID . "\n";
+    addLibrary('345345345345345345345', "episode");
 
     // if ($userID) {
     //     $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
