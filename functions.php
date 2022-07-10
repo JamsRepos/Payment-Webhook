@@ -30,13 +30,13 @@
     }
 
     function addLibrary($package) {
-        global $client, $collection, $userID;
+        global $client, $userID;
 
         // Select the database
-        $collection = $client->session_timer->whitelist;
+        $whitelist = $client->session_timer->whitelist;
 
         // Check if the user is in the database
-        $userExists = $collection->findOne([
+        $userExists = $whitelist->findOne([
             'UserId' => $userID,
         ]);
 
@@ -48,12 +48,12 @@
 
         // If the user doesn't exist, add them to the database
         if (!$userExists) {
-            $collection->insertOne([
+            $whitelist->insertOne([
                 'UserId' => $userID,
                 'MediaTypes' => $types,
             ]);
         } else {
-            $collection->updateOne([
+            $whitelist->updateOne([
                 'UserId' => $userID,
             ], [
                 '$set' => [
@@ -63,35 +63,16 @@
         }
     }
 
-    function removeLibraries() {
-        global $client, $collection, $userID;
-
-        // Select the database
-        $collection = $client->session_timer->whitelist;
-
-        // Check if the user is in the database
-        $userExists = $collection->findOne([
-            'UserId' => $userID,
-        ]);
-
-        // If the user doesn't exist, add them to the database
-        if ($userExists) {
-            $collection->deleteOne([
-                'UserId' => $userID,
-            ]);
-        }
-    }
-
     function addTime($package, $duration) {
-        global $client, $collection, $userID, $webhook;
+        global $client, $userID, $webhook;
 
         // Needs to run first as it changes the database
         addLibrary($package);
 
         // Select the database
-        $collection = $client->payments->users;
+        $users = $client->payments->users;
 
-        $userExists = $collection->findOne([
+        $userExists = $users->findOne([
             'userID' => $userID,
         ]);
 
@@ -100,7 +81,7 @@
             // Check to see if the package in the database is the same as the package in the webhook
             if ($userExists['package'] == $package) {
                 // Update the user's subscription date
-                $collection->updateOne([
+                $users->updateOne([
                     'userID' => $userID,
                 ], [
                     '$set' => [
@@ -110,7 +91,7 @@
                 ]);
             } else {
                 // Update the user's subscription date
-                $collection->updateOne([
+                $users->updateOne([
                     'userID' => $userID,
                 ], [
                     '$set' => [
@@ -122,7 +103,7 @@
             }
         } else {
             // Insert the user into the database
-            $collection->insertOne([
+            $users->insertOne([
                 'userID' => $userID,
                 'package' => $webhook->tier_name,
                 'updated' => strtotime('now'),
