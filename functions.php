@@ -2,7 +2,7 @@
     date_default_timezone_set('Europe/London');
 
     function userID($username = null) {
-        $url = "https://karna.ge/Users";
+        $url = "http://jellyfin:8096/Users";
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
