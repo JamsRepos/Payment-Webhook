@@ -1,1 +1,0 @@
-@hourly wget -O - https://kofi.karna.ge/webhook.php >/dev/null 2>&1
