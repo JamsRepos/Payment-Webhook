@@ -12,5 +12,6 @@ while true; do
 		echo "Checking for expired roles...";
 		wget -O - https://kofi.karna.ge/webhook.php >/dev/null 2>&1
 		sleep 3600
+		MINUTE=`date +%M`
 	done
 done
