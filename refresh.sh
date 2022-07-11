@@ -5,14 +5,13 @@ nohup docker-php-entrypoint apache2-foreground &
 
 # Loop forever until the time is on the hour
 while true; do
-	DATE=`date +%Y%m%d`
-	HOUR=`date +%H`
+	MINUTE=`date +%M`
 
-	while [ $HOUR -ne "00" ]; do
-		sleep 10
+	# If the minute of the hour is 0, run the script
+	if [ "$MINUTE" = "00" ]; then
+		sleep 5
         echo "Checking for expired roles...";
 		wget -O - https://kofi.karna.ge/webhook.php >/dev/null 2>&1
 		sleep 60
-		HOUR=`date +%H`
-	done
+	fi
 done
