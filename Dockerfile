@@ -10,6 +10,7 @@ RUN apt-get update \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && composer install
 
+RUN chmod +x ./refresh.sh
 ENTRYPOINT ["/bin/bash", "./refresh.sh"]
 CMD ""
 
