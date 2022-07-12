@@ -39,7 +39,7 @@
         $userID = userID($webhook->{'from_name'}) ?? null;
 
         $webhook_url = "https://discord.com/api/webhooks/937484287673008169/XMIJuAA2aK4he2eX_jIW9ZNYO0PwQoSk_tkJ13oyXsLL6KQl3Kf5oMiGDO8D18eBiGYs";
-        $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->{'currency'});
+        $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol(strtoupper($webhook->{'currency'}));
 
         if ($userID) {
             switch ($webhook->{'type'}) {
@@ -73,10 +73,10 @@
                             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
                         }
                     }
-                default:
+                case "Donation":
                     // If the type is not recognized, send a message to Discord
-                    $webhook_title = "Unknown Product Type";
-                    $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has purchased **{$webhook->{'type'}}** *({$webhook->{'kofi_transaction_id'}})* for **{$currency}{$webhook->{'amount'}}**\nThey do not receive any perks for this transaction.";
+                    $webhook_title = "New Donation Payment";
+                    $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has donated **{$currency}{$webhook->{'amount'}}** *({$webhook->{'kofi_transaction_id'}})*.\nThey do not receive any perks for this transaction.";
                     $webhook_colour = "F28C28";
 
                     sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
