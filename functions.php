@@ -4,11 +4,6 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    function isValidJSON($str) {
-        json_decode($str);
-        return json_last_error() == JSON_ERROR_NONE;
-    }
-
     function userID($username = null) {
         $url = "https://jellyfin:8096/Users";
 

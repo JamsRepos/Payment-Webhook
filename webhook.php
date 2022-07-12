@@ -8,12 +8,29 @@
 
     // Parse the JSON from the response
     parse_str(urldecode(file_get_contents("php://input")), $input);
-    $webhook = json_decode($debug ?? $input['data'] ?? null);
+    $public = $input["data"] ?? null;
+    $private = $input["readToken"] ?? null;
 
-    echo "Webhook: " . json_encode($webhook) ?? 'Nothing, running cronjob.' . "\n";
+    if ($private) {
+        // Check if the response has a key
+        $result = $public . "&readToken=" .  $private;
+    } else {
+        // If the response doesn't have a key, resume as normal
+        $result = $public;
+    }
+
+    $webhook = json_decode($result) ?? null;
+
+    var_dump($webhook->{'message_id'});
+
+    exit;
+
 
     // Runs the webhook if the payload is present
     if ($webhook) {
+        // General logging
+        echo "Webhook Received!\nPayload: " . $result . "\n\n";
+
         // Build an array of translations for Shop items to be used in the webhook
         $shop = array(
             '6139d6923b' => array(
@@ -77,6 +94,9 @@
             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
         }
     } else {
+        // General Logging
+        echo "Webhook Not Received\nContinung to run a expiry check\n\n";
+
         // If the payload is not present act as the cronjob
         $users = $client->payments->users;
 
