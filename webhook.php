@@ -7,12 +7,8 @@
     $client = new MongoDB\Client("mongodb://mongo:27017");
 
     // Parse the JSON from the response
-    $json_params = $debug ?? file_get_contents("php://input");
-    if (strlen($json_params) > 0 && isValidJSON($json_params)) {
-        $webhook = json_decode($json_params, true);
-    } else {
-        $webhook = null;
-    }
+    parse_str(urldecode(file_get_contents("php://input")), $input);
+    $webhook = json_decode($debug ?? $input['data'] ?? null);
 
     echo "Webhook: " . json_encode($webhook) ?? 'Nothing, running cronjob.' . "\n";
 
@@ -28,12 +24,12 @@
         );
 
         // Grabs user id from Jellyfin if the Username exists
-        $userID = userID($webhook->{'from_name'});
+        $userID = userID($webhook->{'from_name'}) ?? null;
+
+        $webhook_url = "https://discord.com/api/webhooks/937484287673008169/XMIJuAA2aK4he2eX_jIW9ZNYO0PwQoSk_tkJ13oyXsLL6KQl3Kf5oMiGDO8D18eBiGYs";
+        $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->{'currency'});
 
         if ($userID) {
-            $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->{'currency'});
-            $webhook_url = "https://discord.com/api/webhooks/937484287673008169/XMIJuAA2aK4he2eX_jIW9ZNYO0PwQoSk_tkJ13oyXsLL6KQl3Kf5oMiGDO8D18eBiGYs";
-
             switch ($webhook->{'type'}) {
                 case "Subscription":
                     addTime($webhook->{'tier_name'}, '+1 month');
@@ -66,8 +62,19 @@
                         }
                     }
                 default:
+                    // If the type is not recognized, send a message to Discord
+                    $webhook_title = "Unknown Product Type";
+                    $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has purchased **{$webhook->{'type'}}** *({$webhook->{'kofi_transaction_id'}})* for **{$currency}{$webhook->{'amount'}}**\nThey do not receive any perks for this transaction.";
+                    $webhook_colour = "F28C28";
 
+                    sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
             }
+        } else {
+            // Let us know that the user does not exist and to contact them.
+            $webhook_title = "Error - User Not Found";
+            $webhook_description = "**{$webhook->{'from_name'}}** *({$webhook->{'email'}})* has just purchased an item *({$webhook->{'kofi_transaction_id'}})* but does not exist on Karnage.\nPlease contact them for manual approval.";
+            $webhook_colour = "FF0000";
+            sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
         }
     } else {
         // If the payload is not present act as the cronjob
