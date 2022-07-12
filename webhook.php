@@ -21,11 +21,6 @@
 
     $webhook = json_decode($result) ?? null;
 
-    var_dump($webhook->{'message_id'});
-
-    exit;
-
-
     // Runs the webhook if the payload is present
     if ($webhook) {
         // General logging
