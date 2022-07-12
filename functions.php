@@ -105,7 +105,7 @@
             // Insert the user into the database
             $users->insertOne([
                 'userID' => $userID,
-                'package' => $webhook->{'tier_name'},
+                'package' => $package,
                 'updated' => strtotime('now'),
                 'expiry' => strtotime($duration),
             ]);
