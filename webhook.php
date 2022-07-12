@@ -73,13 +73,13 @@
                             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
                         }
                     }
-                case "Donation":
-                    // If the type is not recognized, send a message to Discord
-                    $webhook_title = "New Donation Payment";
-                    $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has donated **{$currency}{$webhook->{'amount'}}** *({$webhook->{'kofi_transaction_id'}})*.\nThey do not receive any perks for this transaction.";
-                    $webhook_colour = "F28C28";
+                // case "Donation":
+                //     // If the type is not recognized, send a message to Discord
+                //     $webhook_title = "New Donation Payment";
+                //     $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has donated **{$currency}{$webhook->{'amount'}}** *({$webhook->{'kofi_transaction_id'}})*.\nThey do not receive any perks for this transaction.";
+                //     $webhook_colour = "F28C28";
 
-                    sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+                //     sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
             }
         } else {
             // Let us know that the user does not exist and to contact them.
