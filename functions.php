@@ -5,7 +5,7 @@
     error_reporting(E_ALL);
 
     function userID($username = null) {
-        $url = "https://jellyfin:8096/Users";
+        $url = "http://jellyfin:8096/Users";
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
