@@ -29,8 +29,7 @@
     // }';
 
     // Parse the JSON from the response
-    parse_str(urldecode(file_get_contents("php://input")), $input);
-    $webhook = json_decode($debug ?? $input['data'] ?? null);
+    $webhook = json_decode($debug ?? file_get_contents("php://input") ?? null);
 
     // Runs the webhook if the payload is present
     if ($webhook) {
