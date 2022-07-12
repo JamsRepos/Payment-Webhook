@@ -29,7 +29,14 @@
     // }';
 
     // Parse the JSON from the response
-    $webhook = json_decode($debug ?? file_get_contents("php://input") ?? null);
+    $json_params = $debug ?? file_get_contents("php://input");
+    if (strlen($json_params) > 0 && isValidJSON($json_params)) {
+        $webhook = json_decode($json_params, true);
+    } else {
+        $webhook = null;
+    }
+
+    echo "Webhook: " . json_encode($webhook) ?? 'Nothing, running cronjob.' . "\n";
 
     // Runs the webhook if the payload is present
     if ($webhook) {
@@ -44,7 +51,6 @@
 
         // Grabs user id from Jellyfin if the Username exists
         $userID = userID($webhook->from_name);
-        echo "User ID: " . $userID . "\n";
 
         if ($userID) {
             $currency = (new Currency\Util\CurrencySymbolUtil)::getSymbol($webhook->currency);
