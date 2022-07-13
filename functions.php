@@ -40,7 +40,7 @@
             'UserId' => $userID,
         ]);
 
-        if ($package == "Survivor") {
+        if ($package == "Bandit") {
             $types = ["episode", "tvchannel"];
         } else {
             $types = ["episode"];

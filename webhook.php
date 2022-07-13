@@ -28,10 +28,45 @@
 
         // Build an array of translations for Shop items to be used in the webhook
         $shop = array(
-            '6139d6923b' => array(
+            'd4b1a8a85f' => array(
                 'label' => '1 Month of Bandit',
                 'name' => 'Bandit',
-                'months' => '+1 month',
+                'duration' => '+1 month',
+            ),
+            'f446efa005' => array(
+                'label' => '3 Months of Bandit',
+                'name' => 'Bandit',
+                'duration' => '+3 months',
+            ),
+            '154b2e4b84' => array(
+                'label' => '6 Months of Bandit',
+                'name' => 'Bandit',
+                'duration' => '+6 months',
+            ),
+            '63da93503d' => array(
+                'label' => '1 Year of Bandit',
+                'name' => 'Bandit',
+                'duration' => '+1 year',
+            ),
+            '6139d6923b' => array(
+                'label' => '1 Month of Survivor',
+                'name' => 'Survivor',
+                'duration' => '+1 month',
+            ),
+            'ea1468c715' => array(
+                'label' => '3 Months of Survivor',
+                'name' => 'Survivor',
+                'duration' => '+3 months',
+            ),
+            '317683bd2a' => array(
+                'label' => '6 Months of Survivor',
+                'name' => 'Survivor',
+                'duration' => '+6 months',
+            ),
+            'e67da1cfd0' => array(
+                'label' => '1 Year of Survivor',
+                'name' => 'Survivor',
+                'duration' => '+1 year',
             ),
         );
 
@@ -64,7 +99,7 @@
 
                         // If the product exists in the array, add the time to the user
                         if ($productExists) {
-                            addTime($productExists['name'], $productExists['months']);
+                            addTime($productExists['name'], $productExists['duration']);
 
                             $webhook_title = "New Purchase Payment";
                             $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has bought **{$productExists['label']}** *({$webhook->{'kofi_transaction_id'}})* for **{$currency}{$webhook->{'amount'}}**.";
