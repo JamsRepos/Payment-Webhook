@@ -30,7 +30,7 @@
     }
 
     function addLibrary($package) {
-        global $client, $userID;
+        global $client, $userID, $webhook;
 
         // Select the database
         $whitelist = $client->session_timer->whitelist;
@@ -49,6 +49,7 @@
         // If the user doesn't exist, add them to the database
         if (!$userExists) {
             $whitelist->insertOne([
+                'Name' => $webhook->{'from_name'},
                 'UserId' => $userID,
                 'MediaTypes' => $types,
             ]);
@@ -104,6 +105,7 @@
         } else {
             // Insert the user into the database
             $users->insertOne([
+                'Name' => $webhook->{'from_name'}
                 'userID' => $userID,
                 'package' => $package,
                 'updated' => strtotime('now'),
