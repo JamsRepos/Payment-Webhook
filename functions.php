@@ -104,7 +104,7 @@
         } else {
             // Insert the user into the database
             $users->insertOne([
-                'Name' => $webhook->{'from_name'}
+                'Name' => $webhook->{'from_name'},
                 'userID' => $userID,
                 'package' => $package,
                 'updated' => strtotime('now'),
