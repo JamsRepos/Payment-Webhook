@@ -6,6 +6,21 @@
     // Create the database connection
     $client = new MongoDB\Client("mongodb://mongo:27017");
 
+    // Check to see if it is a staff ran command
+    $staffID = $_GET['staffID'] ?? null;
+    $targetName = $_GET['targetName'] ?? null;
+    $targetLength = $_GET['targetLength'] ?? null;
+    $targetType = $_GET['targetType'] ?? null;
+
+    if ($staffID && $targetName && $targetLength && $targetType) {
+        $manual = array(
+            'type' => 'Staff Command',
+            'from_name' => $targetName,
+            'duration' => $targetLength,
+            'tier_name' => $targetType,
+        );
+    }
+
     // Parse the JSON from the response
     parse_str(urldecode(file_get_contents("php://input")), $input);
     $public = $input["data"] ?? null;
@@ -19,7 +34,7 @@
         $result = $public;
     }
 
-    $webhook = json_decode($result) ?? null;
+    $webhook = json_decode(json_encode($manual)) ?? json_decode($result) ?? null;
 
     // Runs the webhook if the payload is present
     if ($webhook) {
@@ -108,13 +123,15 @@
                             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
                         }
                     }
-                // case "Donation":
-                //     // If the type is not recognized, send a message to Discord
-                //     $webhook_title = "New Donation Payment";
-                //     $webhook_description = "**{$webhook->{'from_name'}}** *({$userID})* has donated **{$currency}{$webhook->{'amount'}}** *({$webhook->{'kofi_transaction_id'}})*.\nThey do not receive any perks for this transaction.";
-                //     $webhook_colour = "F28C28";
+                case "Staff Command":
+                    // If the payment came from the bot
+                    addTime($webhook->{'tier_name'}, "+" . $webhook->{'duration'});
 
-                //     sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+                    $webhook_title = "Manual Staff Assignment";
+                    $webhook_description = "<@{$staffID}> gave **{$webhook->{'from_name'}}** *({$userID})* the product **{$webhook->{'tier_name'}}** for **{$webhook->{'duration'}}**.";
+                    $webhook_colour = "F28C28";
+
+                    sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
             }
         } else {
             // Let us know that the user does not exist and to contact them.
