@@ -18,6 +18,7 @@
             'from_name' => $targetName,
             'duration' => $targetLength,
             'tier_name' => $targetType,
+            'currency' => 'GBP',
         );
     }
 
