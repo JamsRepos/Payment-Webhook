@@ -7,10 +7,10 @@
     $client = new MongoDB\Client("mongodb://mongo:27017");
 
     // Check to see if it is a staff ran command
-    $staffID = $_GET['staffID'] ?? null;
-    $targetName = $_GET['targetName'] ?? null;
-    $targetLength = $_GET['targetLength'] ?? null;
-    $targetType = $_GET['targetType'] ?? null;
+    $staffID = $_GET['staffDiscordID'] ?? null;
+    $targetName = $_GET['targetKarnageName'] ?? null;
+    $targetLength = $_GET['targetTimeLength'] ?? null;
+    $targetType = $_GET['targetTierPackage'] ?? null;
 
     if ($staffID && $targetName && $targetLength && $targetType) {
         $manual = array(
