@@ -126,7 +126,7 @@
                     }
                 case "Staff Command":
                     // If the payment came from the bot
-                    addTime($webhook->{'tier_name'}, "+" . $webhook->{'duration'});
+                    addTime($webhook->{'tier_name'}, $webhook->{'duration'});
 
                     $webhook_title = "Manual Staff Assignment";
                     $webhook_description = "<@{$staffID}> gave **{$webhook->{'from_name'}}** *({$userID})* the product **{$webhook->{'tier_name'}}** for **{$webhook->{'duration'}}**.";
