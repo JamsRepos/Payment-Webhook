@@ -20,8 +20,9 @@
             'tier_name' => $targetType,
             'currency' => 'GBP',
         );
+    } else {
+        $manual = null;
     }
-
     // Parse the JSON from the response
     parse_str(urldecode(file_get_contents("php://input")), $input);
     $public = $input["data"] ?? null;
@@ -108,6 +109,8 @@
                     }
 
                     sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+
+                    return;
                 case "Shop Order":
                     // Loop through all the items purchased and add the time to the user
                     foreach ($webhook->{'shop_items'} as $product) {
@@ -124,6 +127,8 @@
                             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
                         }
                     }
+
+                    return;
                 case "Staff Command":
                     // If the payment came from the bot
                     addTime($webhook->{'tier_name'}, $webhook->{'duration'});
@@ -133,6 +138,8 @@
                     $webhook_colour = "F28C28";
 
                     sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+
+                    return;
             }
         } else {
             // Let us know that the user does not exist and to contact them.
@@ -140,6 +147,8 @@
             $webhook_description = "**{$webhook->{'from_name'}}** *({$webhook->{'email'}})* has just purchased an item *({$webhook->{'kofi_transaction_id'}})* but does not exist on Karnage.\nPlease contact them for manual approval.";
             $webhook_colour = "FF0000";
             sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+
+            return;
         }
     } else {
         // General Logging
@@ -166,5 +175,7 @@
         $webhook_description = "The cronjob has run successfully.\n Any expired users have been removed from the databases.";
         $webhook_colour = "4ee51b";
         sendEmbed($webhook_url, $webhook_title, $webhook_description, $webhook_colour);
+
+        return;
     }
 ?>
